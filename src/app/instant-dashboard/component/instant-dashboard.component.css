@@ -1,0 +1,10 @@
+.instant-dashboard-bg {
+  background-color: ##f5f5f6;
+}
+mat-toolbar {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 998;
+}

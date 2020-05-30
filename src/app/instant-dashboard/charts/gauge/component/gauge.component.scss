@@ -1,0 +1,22 @@
+body {
+  margin-top: 8rem;
+}
+
+#chart {
+  width: 400px;
+  margin: 0 auto;
+}
+
+.gauge .value {
+  fill: #777;
+  font-size: 1.5rem;
+}
+
+.gauge .value tspan {
+  font-size: 1rem;
+}
+
+.gauge .scale text {
+  fill: #999;
+  font-size: 0.75rem;
+}
