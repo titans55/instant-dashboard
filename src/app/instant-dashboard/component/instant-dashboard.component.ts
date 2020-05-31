@@ -37,8 +37,8 @@ export class InstantDashboardComponent implements OnChanges, OnInit {
 
   @Input() dashboardOptions: DashboardOptions<any>;
 
-  @ViewChild('drawer')
-  drawer: any;
+  @ViewChild('sidenav')
+  sidenav: any;
 
   constructor() {}
 
@@ -315,5 +315,21 @@ export class InstantDashboardComponent implements OnChanges, OnInit {
       i++;
     }
     return temp;
+  }
+
+  get sideNavMode(): 'side' | 'over' {
+    if (this.ifMobile()) {
+      return 'over';
+    } else {
+      return 'side';
+    }
+  }
+
+  private ifMobile(): boolean {
+    return window.matchMedia('screen and (max-width: 768px)').matches;
+  }
+
+  get defaultOpened(): boolean {
+    return !this.ifMobile();
   }
 }

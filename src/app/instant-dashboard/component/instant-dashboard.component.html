@@ -1,39 +1,46 @@
 <ng-container *ngIf="dashboardOptions">
-  <div class="instant-dashboard-bg">
-    <mat-toolbar color="primary" class="mb-2">
-      <button
-        mat-icon-button
-        aria-label="Example icon button with a menu icon"
-        (click)="drawer.toggle()"
-      >
-        <mat-icon>menu</mat-icon>
-      </button>
-      {{ dashboardOptions.dashboardName }}
-    </mat-toolbar>
-
-    <mat-drawer-container
-      *ngIf="
-        dashboardOptions.filteringOptions &&
-        dashboardOptions.filteringOptions.enabled
-      "
+  <mat-toolbar color="primary">
+    <button
+      mat-icon-button
+      aria-label="Example icon button with a menu icon"
+      (click)="sidenav.toggle()"
     >
-      <mat-drawer #drawer mode="side" class="px-2" mode="side" opened="true">
-        <mat-form-field class="mt-3">
-          <mat-label>
-            {{ dashboardOptions.filteringOptions.filterCaption }}
-          </mat-label>
-          <mat-select
-            [(value)]="selectedFilter"
-            (selectionChange)="filterSelectionChange()"
-          >
-            <mat-option [value]="undefined">Any</mat-option>
-            <mat-option *ngFor="let option of filterOptions" [value]="option">
-              {{ option }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </mat-drawer>
-      <div class="instant-dashboard-bg pt-1">
+      <mat-icon>menu</mat-icon>
+    </button>
+    {{ dashboardOptions.dashboardName }}
+  </mat-toolbar>
+
+  <mat-sidenav-container
+    *ngIf="
+      dashboardOptions.filteringOptions &&
+      dashboardOptions.filteringOptions.enabled
+    "
+  >
+    <mat-sidenav
+      #sidenav
+      class="px-2"
+      [mode]="sideNavMode"
+      opened="{{ defaultOpened }}"
+      [fixedInViewport]="true"
+      [fixedTopGap]="50"
+    >
+      <mat-form-field class="mt-3">
+        <mat-label>
+          {{ dashboardOptions.filteringOptions.filterCaption }}
+        </mat-label>
+        <mat-select
+          [(value)]="selectedFilter"
+          (selectionChange)="filterSelectionChange()"
+        >
+          <mat-option [value]="undefined">Any</mat-option>
+          <mat-option *ngFor="let option of filterOptions" [value]="option">
+            {{ option }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </mat-sidenav>
+    <mat-sidenav-content class="instant-dashboard-bg">
+      <div class="pt-1">
         <div class="row mx-2">
           <ng-container *ngFor="let chartData of chartsData">
             <div class="col-md-6 col-sm-12">
@@ -49,6 +56,6 @@
           </ng-container>
         </div>
       </div>
-    </mat-drawer-container>
-  </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
 </ng-container>
