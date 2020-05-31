@@ -4,6 +4,7 @@ import {
   Input,
   AfterViewInit,
   OnChanges,
+  ViewChild,
 } from '@angular/core';
 import { DashboardOptions, ChartOptions } from '../model/dashboard-options';
 import {
@@ -35,6 +36,9 @@ export class InstantDashboardComponent implements OnChanges, OnInit {
   chartsData: Array<ChartData<ChartDataOptionsTypes>> = [];
 
   @Input() dashboardOptions: DashboardOptions<any>;
+
+  @ViewChild('drawer')
+  drawer: any;
 
   constructor() {}
 

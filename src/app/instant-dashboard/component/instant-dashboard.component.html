@@ -1,27 +1,23 @@
 <ng-container *ngIf="dashboardOptions">
   <div class="instant-dashboard-bg">
     <mat-toolbar color="primary" class="mb-2">
+      <button
+        mat-icon-button
+        aria-label="Example icon button with a menu icon"
+        (click)="drawer.toggle()"
+      >
+        <mat-icon>menu</mat-icon>
+      </button>
       {{ dashboardOptions.dashboardName }}
     </mat-toolbar>
 
-    <mat-sidenav-container
+    <mat-drawer-container
       *ngIf="
         dashboardOptions.filteringOptions &&
         dashboardOptions.filteringOptions.enabled
       "
     >
-      <mat-sidenav
-        #sidenav
-        [opened]="
-          dashboardOptions.filteringOptions &&
-          dashboardOptions.filteringOptions.enabled
-        "
-        mode="side"
-        [fixedInViewport]="true"
-        [fixedTopGap]="60"
-        class="px-2"
-        position="end"
-      >
+      <mat-drawer #drawer mode="side" class="px-2" mode="side" opened="true">
         <mat-form-field class="mt-3">
           <mat-label>
             {{ dashboardOptions.filteringOptions.filterCaption }}
@@ -36,8 +32,8 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-      </mat-sidenav>
-      <mat-sidenav-content class="instant-dashboard-bg pt-1">
+      </mat-drawer>
+      <div class="instant-dashboard-bg pt-1">
         <div class="row mx-2">
           <ng-container *ngFor="let chartData of chartsData">
             <div class="col-md-6 col-sm-12">
@@ -52,7 +48,7 @@
             </div>
           </ng-container>
         </div>
-      </mat-sidenav-content>
-    </mat-sidenav-container>
+      </div>
+    </mat-drawer-container>
   </div>
 </ng-container>
