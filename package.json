@@ -24,6 +24,7 @@
     "airtable": "^0.8.1",
     "bootstrap-4-grid": "^3.4.0",
     "chart.js": "^2.9.3",
+    "chartjs-plugin-datalabels": "^0.7.0",
     "d3": "^5.16.0",
     "d3-scale": "^3.2.1",
     "rxjs": "~6.5.4",

@@ -69,7 +69,6 @@ export class InstantDashboardComponent implements OnChanges, OnInit {
             record[this.dashboardOptions.filteringOptions.filterDataField] !=
             this.selectedFilter
           ) {
-            console.log(recordIndex);
             continue;
           }
         }

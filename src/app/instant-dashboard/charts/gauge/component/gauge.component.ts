@@ -9,6 +9,7 @@ import {
 import * as d3 from 'd3';
 import { ChartData } from '../../model/base-charts-options';
 import { GaugeChartDataOptions } from '../model/gauge-chart-data';
+declare let Chart: any;
 
 @Component({
   selector: 'app-gauge',
@@ -18,122 +19,102 @@ import { GaugeChartDataOptions } from '../model/gauge-chart-data';
 export class GaugeComponent implements AfterViewInit {
   @Input() chartData: ChartData<GaugeChartDataOptions>;
 
-  @ViewChild('chart')
-  myChart: ElementRef<HTMLElement>;
+  // @ViewChild('chart')
+  // myChart: ElementRef<HTMLElement>;
+
+  @ViewChild('chartjsgauge')
+  gaugecanvas: ElementRef<HTMLCanvasElement>;
+
+  ctx: CanvasRenderingContext2D;
 
   constructor() {}
 
   ngAfterViewInit() {
-    var size = 150,
-      thickness = 60;
+    Chart.pluginService.register({
+      beforeDraw: function (chart) {
+        if (chart.config.options.elements.center) {
+          //Get ctx from string
+          let ctx = chart.chart.ctx;
 
-    var color = d3
-      .scaleLinear()
-      .domain([0, 50, 100])
-      .range([<any>'#db2828', '#fbbd08', '#21ba45']);
-    // .domain([0, 17, 33, 50, 67, 83, 100])
-    // .range(['#db4639', '#db7f29', '#d1bf1f', '#92c51b', '#48ba17', '#12ab24', '#0f9f59']);
+          //Get options from the center object in options
+          let centerConfig = chart.config.options.elements.center;
+          let fontStyle = centerConfig.fontStyle || 'Arial';
+          let txt = centerConfig.text;
+          let color = centerConfig.color || '#000';
+          let sidePadding = centerConfig.sidePadding || 20;
+          let sidePaddingCalculated =
+            (sidePadding / 100) * (chart.innerRadius * 2);
+          //Start with a base font of 30px
+          ctx.font = '30px ' + fontStyle;
 
-    var arc = d3
-      .arc()
-      .innerRadius(size - thickness)
-      .outerRadius(size)
-      .startAngle(-Math.PI / 2);
+          //Get the width of the string and also the width of the element minus 10 to give it 5px side padding
+          let stringWidth = ctx.measureText(txt).width;
+          let elementWidth = chart.innerRadius * 2 - sidePaddingCalculated;
 
-    var svg = d3
-      .select(this.myChart.nativeElement)
-      .append('svg')
-      .attr('width', size * 2)
-      .attr('height', size + 20)
-      .attr('class', 'gauge');
+          // Find out how much the font can grow in width.
+          let widthRatio = elementWidth / stringWidth;
+          let newFontSize = Math.floor(widthRatio * 23);
+          let elementHeight = chart.innerRadius * 2;
 
-    var chart = svg
-      .append('g')
-      .attr('transform', 'translate(' + size + ',' + size + ')');
+          // Pick a new font size so it will not be larger than the height of label.
+          let fontSizeToUse = Math.min(newFontSize, elementHeight);
 
-    var background = chart
-      .append('path')
-      .datum({
-        endAngle: Math.PI / 2,
-      })
-      .attr('class', 'background')
-      .style('fill', '#d9d9d9')
-      .attr('d', arc);
+          //Set font settings to draw it correctly.
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          let centerX = (chart.chartArea.left + chart.chartArea.right) / 2 + 4;
+          let centerY = chart.chartArea.bottom - chart.innerRadius / 4;
+          ctx.font = fontSizeToUse + 'px ' + fontStyle;
+          ctx.fillStyle = color;
 
-    var foreground = chart
-      .append('path')
-      .datum({
-        endAngle: -Math.PI / 2,
-      })
-      .style('fill', '#db2828')
-      .attr('d', arc);
+          //Draw text in center
+          ctx.fillText(txt, centerX, centerY);
+        }
+      },
+    });
 
-    var value = svg
-      .append('g')
-      .attr('transform', 'translate(' + size + ',' + size * 0.9 + ')')
-      .append('text')
-      .text(0)
-      .attr('text-anchor', 'middle')
-      .attr('class', 'value');
-
-    var scale = svg
-      .append('g')
-      .attr('transform', 'translate(' + size + ',' + (size + 15) + ')')
-      .attr('class', 'scale');
-
-    scale
-      .append('text')
-      .text(100)
-      .attr('text-anchor', 'middle')
-      .attr('x', size - thickness / 2);
-
-    scale
-      .append('text')
-      .text(0)
-      .attr('text-anchor', 'middle')
-      .attr('x', -(size - thickness / 2));
-
-    let percantege =
+    const percentage: number =
       (this.chartData.chartDataOptions.value /
         this.chartData.chartDataOptions.rangeMax) *
       100;
-    initGauge(percantege);
+    // this.setGaugeValue(this.myChart.nativeElement, percentage);
 
-    function initGauge(v) {
-      v = d3.format('.1f')(v);
-      foreground
-        .transition()
-        .duration(750)
-        .style('fill', function () {
-          return color(v);
-        })
-        .call(arcTween, v);
+    this.ctx = this.gaugecanvas.nativeElement.getContext('2d');
 
-      value.transition().duration(750).call(textTween, v);
-    }
-
-    function arcTween(transition, v) {
-      var newAngle = (v / 100) * Math.PI - Math.PI / 2;
-      transition.attrTween('d', function (d) {
-        var interpolate = d3.interpolate(d.endAngle, newAngle);
-        return function (t) {
-          d.endAngle = interpolate(t);
-          return arc(d);
-        };
-      });
-    }
-
-    function textTween(transition, v) {
-      transition.tween('text', function () {
-        var interpolate = d3.interpolate(this.innerHTML, v),
-          split = (v + '').split('.'),
-          round = split.length > 1 ? Math.pow(10, split[1].length) : 1;
-        return function (t) {
-          this.innerHTML =
-            d3.format('.1f')(Math.round(interpolate(t) * round) / round) +
-            '<tspan>%</tspan>';
-        };
-      });
-    }
+    const chartjsGauge = new Chart(this.ctx, {
+      type: 'doughnut',
+      data: {
+        datasets: [
+          {
+            data: [percentage, 100 - percentage],
+            backgroundColor: ['#407294', '#d9d9d9'],
+          },
+        ],
+      },
+      options: {
+        legend: {
+          display: false,
+        },
+        tooltips: {
+          enabled: false,
+        },
+        responsive: true,
+        display: true,
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        plugins: {
+          datalabels: {
+            display: false,
+          },
+        },
+        elements: {
+          center: {
+            text: percentage.toFixed() + '%',
+            fontStyle: 'Roboto', // Default is Arial
+            sidePadding: 20, // Defualt is 20 (as a percentage)
+          },
+        },
+      },
+    });
   }
 }

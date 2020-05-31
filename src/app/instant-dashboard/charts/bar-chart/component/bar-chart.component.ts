@@ -6,9 +6,9 @@ import {
   AfterViewInit,
   Input,
 } from '@angular/core';
-import * as Chart from 'chart.js';
 import { BarChartDataOptions } from '../model/bar-chart-options';
 import { ChartData } from '../../model/base-charts-options';
+declare var Chart: any;
 
 @Component({
   selector: 'app-bar-chart',
