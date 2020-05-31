@@ -71,7 +71,7 @@ export class DemoComponent implements OnInit {
           },
         },
         {
-          chartHeader: 'Peope who speak less then 3 languages',
+          chartHeader: 'People who speak less then 3 languages',
           dataField: 'language',
           chartDetails: {
             type: 'gauge',
