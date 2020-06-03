@@ -12,6 +12,7 @@ import { ConditionEnums } from 'src/app/instant-dashboard/charts/gauge/model/enu
 export class DemoComponent implements OnInit {
   peopleInfo: Array<PersonInfoModel>;
   diversityDashboardOptions: DashboardOptions<PersonInfoModel>;
+
   constructor(private service: DemoService) {}
 
   async ngOnInit() {
@@ -28,10 +29,6 @@ export class DemoComponent implements OnInit {
         enabled: true,
         filterDataField: 'role',
         filterCaption: 'Role',
-      },
-      cachingOptions: {
-        enabled: true,
-        localStorageKey: 'PeopleInfo',
       },
       charts: [
         {

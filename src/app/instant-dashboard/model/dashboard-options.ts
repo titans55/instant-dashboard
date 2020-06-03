@@ -33,6 +33,5 @@ export class DashboardOptions<T> {
   dashboardName: string;
   dataSource: Array<T>;
   charts: Array<ChartOptions<T>>;
-  cachingOptions?: CachingOptions;
   filteringOptions?: FilteringOptions<T>;
 }
