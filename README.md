@@ -1,6 +1,6 @@
 # instant-dashboard
 
-Create your customizable visualization dashboard within seconds (currently bar and gauge charts supported)
+Create your own customizable visualization dashboard within seconds (currently bar and gauge charts supported)
 
 [This dashboard](https://titans55.github.io/instant-dashboard/) created using the configuration below.
 
